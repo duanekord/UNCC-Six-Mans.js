@@ -215,6 +215,94 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
     }
+
+    case 'top5': {
+      const row1 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('joinQueue')
+            .setLabel('Join')
+            .setStyle('SUCCESS')
+            .setEmoji('✅'),
+          //.setDisabled(Need a method that returns T/F to determine if this is a clickable button after a full queue)
+          new MessageButton()
+            .setCustomId('leaveQueue')
+            .setLabel('Leave')
+            .setStyle('DANGER')
+            .setEmoji('❌'),
+          new MessageButton()
+            .setCustomId('listQueue')
+            .setLabel('List')
+            .setStyle('PRIMARY')
+            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+        );
+
+      const row2 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('top5')
+            .setLabel('Top 5')
+            .setStyle('SECONDARY')
+            .setEmoji('🔢'),
+          new MessageButton()
+            .setCustomId('help')
+            .setLabel('Help')
+            .setStyle('SECONDARY')
+            .setEmoji('❓'),
+        );
+
+      const embed = new MessageEmbed()
+        .setColor('#5865f2') // <- This is blurple
+        .setTitle('Top 5')
+        .setDescription('Click the green button to join the queue!\n\n' +
+          await QueueRepository.getAllBallChasersInQueue() + ' h\n\n h\n\n h')
+
+      await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
+    }
+
+    case 'help': {
+      const row1 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('joinQueue')
+            .setLabel('Join')
+            .setStyle('SUCCESS')
+            .setEmoji('✅'),
+          //.setDisabled(Need a method that returns T/F to determine if this is a clickable button after a full queue)
+          new MessageButton()
+            .setCustomId('leaveQueue')
+            .setLabel('Leave')
+            .setStyle('DANGER')
+            .setEmoji('❌'),
+          new MessageButton()
+            .setCustomId('listQueue')
+            .setLabel('List')
+            .setStyle('PRIMARY')
+            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+        );
+
+      const row2 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('top5')
+            .setLabel('Top 5')
+            .setStyle('SECONDARY')
+            .setEmoji('🔢'),
+          new MessageButton()
+            .setCustomId('help')
+            .setLabel('Help')
+            .setStyle('SECONDARY')
+            .setEmoji('❓'),
+        );
+
+      const embed = new MessageEmbed()
+        .setColor('#5865f2') // <- This is blurple
+        .setTitle('Help')
+        .setDescription('Click the green button to join the queue!\n\n' +
+          await QueueRepository.getAllBallChasersInQueue() + ' h\n\n h\n\n h')
+
+      await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
+    }
       break;
 
   }
