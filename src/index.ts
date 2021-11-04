@@ -14,7 +14,7 @@ NormClient.on("ready", async () => {
   if (!channel.isText()) {
     throw new Error('Channel is not a text channel!');
   }
-  const row = new MessageActionRow()
+  const row1 = new MessageActionRow()
     .addComponents(
       new MessageButton()
         .setCustomId('joinQueue')
@@ -33,13 +33,27 @@ NormClient.on("ready", async () => {
         .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
     );
 
+  const row2 = new MessageActionRow()
+    .addComponents(
+      new MessageButton()
+        .setCustomId('top5')
+        .setLabel('Top 5')
+        .setStyle('SECONDARY')
+        .setEmoji('🔢'),
+      new MessageButton()
+        .setCustomId('help')
+        .setLabel('Help')
+        .setStyle('SECONDARY')
+        .setEmoji('❓'),
+    );
+
   const embed = new MessageEmbed()
     .setColor('#3ba55c') // <- This is green
     .setTitle('Queue is Empty')
     .setDescription('Click the green button to join the queue!')
   console.info("NormJS is running.");
 
-  await channel.send({ embeds: [embed], components: [row] });
+  await channel.send({ embeds: [embed], components: [row1, row2] });
 });
 
 
@@ -66,7 +80,7 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
         //await QueueRepository.addBallChaserToQueue(QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString()))
       }
 
-      const row = new MessageActionRow()
+      const row1 = new MessageActionRow()
         .addComponents(
           new MessageButton()
             .setCustomId('joinQueue')
@@ -86,13 +100,27 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
             .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
         );
 
+      const row2 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('top5')
+            .setLabel('Top 5')
+            .setStyle('SECONDARY')
+            .setEmoji('🔢'),
+          new MessageButton()
+            .setCustomId('help')
+            .setLabel('Help')
+            .setStyle('SECONDARY')
+            .setEmoji('❓'),
+        );
+
       const embed = new MessageEmbed()
         .setColor('#3ba55c') // <- This is green
         .setTitle(buttonInteraction.user.username + ' Joined the Queue!')
         .setDescription('Click the green button to join the queue!\n\n' +
           await QueueRepository.getAllBallChasersInQueue() + ' h')
 
-      await buttonInteraction.update({ embeds: [embed], components: [row] })
+      await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
     }
 
     // Introduction of new error here after adding leave button. Join is called twice on the same interaction
@@ -102,7 +130,7 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
       //const player: BallChaser = QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString())
       //await QueueRepository.removeBallChaserFromQueue(player)
 
-      const row = new MessageActionRow()
+      const row1 = new MessageActionRow()
         .addComponents(
           new MessageButton()
             .setCustomId('joinQueue')
@@ -121,17 +149,31 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
             .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
         );
 
+      const row2 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('top5')
+            .setLabel('Top 5')
+            .setStyle('SECONDARY')
+            .setEmoji('🔢'),
+          new MessageButton()
+            .setCustomId('help')
+            .setLabel('Help')
+            .setStyle('SECONDARY')
+            .setEmoji('❓'),
+        );
+
       const embed = new MessageEmbed()
         .setColor('#ed4245') // <- This is red
         .setTitle(buttonInteraction.user.username + ' Left the Queue!')
         .setDescription('Click the green button to join the queue!\n\n' +
           await QueueRepository.getAllBallChasersInQueue() + ' h')
 
-      await buttonInteraction.update({ embeds: [embed], components: [row] })
+      await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
     }
 
     case 'listQueue': {
-      const row = new MessageActionRow()
+      const row1 = new MessageActionRow()
         .addComponents(
           new MessageButton()
             .setCustomId('joinQueue')
@@ -151,13 +193,27 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
             .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
         );
 
+      const row2 = new MessageActionRow()
+        .addComponents(
+          new MessageButton()
+            .setCustomId('top5')
+            .setLabel('Top 5')
+            .setStyle('SECONDARY')
+            .setEmoji('🔢'),
+          new MessageButton()
+            .setCustomId('help')
+            .setLabel('Help')
+            .setStyle('SECONDARY')
+            .setEmoji('❓'),
+        );
+
       const embed = new MessageEmbed()
         .setColor('#5865f2') // <- This is blurple
         .setTitle('List Of The Current Queue')
         .setDescription('Click the green button to join the queue!\n\n' +
           await QueueRepository.getAllBallChasersInQueue() + ' h\n\n h\n\n h')
 
-      await buttonInteraction.update({ embeds: [embed], components: [row] })
+      await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
     }
       break;
 
