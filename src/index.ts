@@ -121,10 +121,9 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           await QueueRepository.getAllBallChasersInQueue() + ' h')
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
+      break;
     }
 
-    // Introduction of new error here after adding leave button. Join is called twice on the same interaction
-    // Error [INTERACTION_ALREADY_REPLIED]: The reply to this interaction has already been sent or deferred.
     case 'leaveQueue': {
 
       //const player: BallChaser = QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString())
@@ -170,6 +169,7 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           await QueueRepository.getAllBallChasersInQueue() + ' h')
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
+      break;
     }
 
     case 'listQueue': {
@@ -214,6 +214,7 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           await QueueRepository.getAllBallChasersInQueue() + ' h\n\n h\n\n h')
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
+      break;
     }
 
     case 'top5': {
@@ -258,6 +259,7 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           await QueueRepository.getAllBallChasersInQueue() + ' h\n\n h\n\n h')
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
+      break;
     }
 
     case 'help': {
@@ -302,9 +304,8 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           await QueueRepository.getAllBallChasersInQueue() + ' h\n\n h\n\n h')
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
-    }
       break;
-
+    }
   }
 })
 
