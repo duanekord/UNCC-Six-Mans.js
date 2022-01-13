@@ -19,18 +19,15 @@ NormClient.on("ready", async () => {
       new MessageButton()
         .setCustomId('joinQueue')
         .setLabel('Join')
-        .setStyle('SUCCESS')
-        .setEmoji('✅'),
+        .setStyle('SUCCESS'),
       new MessageButton()
         .setCustomId('leaveQueue')
         .setLabel('Leave')
-        .setStyle('DANGER')
-        .setEmoji('❌'),
+        .setStyle('DANGER'),
       new MessageButton()
         .setCustomId('listQueue')
         .setLabel('List')
-        .setStyle('PRIMARY')
-        .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+        .setStyle('PRIMARY'),
     );
 
   const row2 = new MessageActionRow()
@@ -38,13 +35,11 @@ NormClient.on("ready", async () => {
       new MessageButton()
         .setCustomId('top5')
         .setLabel('Top 5')
-        .setStyle('SECONDARY')
-        .setEmoji('🔢'),
+        .setStyle('SECONDARY'),
       new MessageButton()
         .setCustomId('help')
         .setLabel('Help')
-        .setStyle('SECONDARY')
-        .setEmoji('❓'),
+        .setStyle('SECONDARY'),
     );
 
   const embed = new MessageEmbed()
@@ -64,20 +59,22 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
   switch (buttonInteraction.customId) {
     case 'joinQueue': {
 
-      if (QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString()) == null) {
+      let member: BallChaser | null;
+      member = await QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString());
+
+      if (member == null) {
         const player: BallChaser = {
           id: buttonInteraction.user.toString(),
           mmr: 100,
           name: buttonInteraction.user.username,
           isCap: false,
           team: null,
-          queueTime: new DateTime,
+          queueTime: DateTime.now(),
         }
-        await QueueRepository.addBallChaserToQueue(player)
+        await QueueRepository.addBallChaserToQueue(player);
 
       } else {
-        //const player = QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString())
-        //await QueueRepository.addBallChaserToQueue(QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString()))
+        await QueueRepository.addBallChaserToQueue(member);
       }
 
       const row1 = new MessageActionRow()
@@ -85,19 +82,16 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('joinQueue')
             .setLabel('Join')
-            .setStyle('SUCCESS')
-            .setEmoji('✅'),
+            .setStyle('SUCCESS'),
           //.setDisabled(Need a method that returns T/F to determine if this is a clickable button after a full queue)
           new MessageButton()
             .setCustomId('leaveQueue')
             .setLabel('Leave')
-            .setStyle('DANGER')
-            .setEmoji('❌'),
+            .setStyle('DANGER'),
           new MessageButton()
             .setCustomId('listQueue')
             .setLabel('List')
-            .setStyle('PRIMARY')
-            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+            .setStyle('PRIMARY'),
         );
 
       const row2 = new MessageActionRow()
@@ -105,20 +99,20 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('top5')
             .setLabel('Top 5')
-            .setStyle('SECONDARY')
-            .setEmoji('🔢'),
+            .setStyle('SECONDARY'),
           new MessageButton()
             .setCustomId('help')
             .setLabel('Help')
-            .setStyle('SECONDARY')
-            .setEmoji('❓'),
+            .setStyle('SECONDARY'),
         );
-
+      
+      
+      let ballchasers = await QueueRepository.getAllBallChasersInQueue()
       const embed = new MessageEmbed()
         .setColor('#3ba55c') // <- This is green
         .setTitle(buttonInteraction.user.username + ' Joined the Queue!')
         .setDescription('Click the green button to join the queue!\n\n' +
-          await QueueRepository.getAllBallChasersInQueue() + ' h')
+          ballchasers[0].name);
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
       break;
@@ -126,26 +120,26 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
 
     case 'leaveQueue': {
 
-      //const player: BallChaser = QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString())
-      //await QueueRepository.removeBallChaserFromQueue(player)
+      let member: BallChaser | null;
+      member = await QueueRepository.getBallChaserInQueue(buttonInteraction.user.toString());
+      if (member != null) {
+        QueueRepository.removeBallChaserFromQueue(buttonInteraction.user.toString());
+      }
 
       const row1 = new MessageActionRow()
         .addComponents(
           new MessageButton()
             .setCustomId('joinQueue')
             .setLabel('Join')
-            .setStyle('SUCCESS')
-            .setEmoji('✅'),
+            .setStyle('SUCCESS'),
           new MessageButton()
             .setCustomId('leaveQueue')
             .setLabel('Leave')
-            .setStyle('DANGER')
-            .setEmoji('❌'),
+            .setStyle('DANGER'),
           new MessageButton()
             .setCustomId('listQueue')
             .setLabel('List')
-            .setStyle('PRIMARY')
-            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+            .setStyle('PRIMARY'),
         );
 
       const row2 = new MessageActionRow()
@@ -153,20 +147,18 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('top5')
             .setLabel('Top 5')
-            .setStyle('SECONDARY')
-            .setEmoji('🔢'),
+            .setStyle('SECONDARY'),
           new MessageButton()
             .setCustomId('help')
             .setLabel('Help')
-            .setStyle('SECONDARY')
-            .setEmoji('❓'),
+            .setStyle('SECONDARY'),
         );
 
       const embed = new MessageEmbed()
         .setColor('#ed4245') // <- This is red
         .setTitle(buttonInteraction.user.username + ' Left the Queue!')
         .setDescription('Click the green button to join the queue!\n\n' +
-          await QueueRepository.getAllBallChasersInQueue() + ' h')
+          await QueueRepository.getAllBallChasersInQueue());
 
       await buttonInteraction.update({ embeds: [embed], components: [row1, row2] })
       break;
@@ -178,19 +170,16 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('joinQueue')
             .setLabel('Join')
-            .setStyle('SUCCESS')
-            .setEmoji('✅'),
+            .setStyle('SUCCESS'),
           //.setDisabled(Need a method that returns T/F to determine if this is a clickable button after a full queue)
           new MessageButton()
             .setCustomId('leaveQueue')
             .setLabel('Leave')
-            .setStyle('DANGER')
-            .setEmoji('❌'),
+            .setStyle('DANGER'),
           new MessageButton()
             .setCustomId('listQueue')
             .setLabel('List')
-            .setStyle('PRIMARY')
-            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+            .setStyle('PRIMARY'),
         );
 
       const row2 = new MessageActionRow()
@@ -198,13 +187,11 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('top5')
             .setLabel('Top 5')
-            .setStyle('SECONDARY')
-            .setEmoji('🔢'),
+            .setStyle('SECONDARY'),
           new MessageButton()
             .setCustomId('help')
             .setLabel('Help')
-            .setStyle('SECONDARY')
-            .setEmoji('❓'),
+            .setStyle('SECONDARY'),
         );
 
       const embed = new MessageEmbed()
@@ -223,19 +210,16 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('joinQueue')
             .setLabel('Join')
-            .setStyle('SUCCESS')
-            .setEmoji('✅'),
+            .setStyle('SUCCESS'),
           //.setDisabled(Need a method that returns T/F to determine if this is a clickable button after a full queue)
           new MessageButton()
             .setCustomId('leaveQueue')
             .setLabel('Leave')
-            .setStyle('DANGER')
-            .setEmoji('❌'),
+            .setStyle('DANGER'),
           new MessageButton()
             .setCustomId('listQueue')
             .setLabel('List')
-            .setStyle('PRIMARY')
-            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+            .setStyle('PRIMARY'),
         );
 
       const row2 = new MessageActionRow()
@@ -243,13 +227,11 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('top5')
             .setLabel('Top 5')
-            .setStyle('SECONDARY')
-            .setEmoji('🔢'),
+            .setStyle('SECONDARY'),
           new MessageButton()
             .setCustomId('help')
             .setLabel('Help')
-            .setStyle('SECONDARY')
-            .setEmoji('❓'),
+            .setStyle('SECONDARY'),
         );
 
       const embed = new MessageEmbed()
@@ -268,19 +250,16 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('joinQueue')
             .setLabel('Join')
-            .setStyle('SUCCESS')
-            .setEmoji('✅'),
+            .setStyle('SUCCESS'),
           //.setDisabled(Need a method that returns T/F to determine if this is a clickable button after a full queue)
           new MessageButton()
             .setCustomId('leaveQueue')
             .setLabel('Leave')
-            .setStyle('DANGER')
-            .setEmoji('❌'),
+            .setStyle('DANGER'),
           new MessageButton()
             .setCustomId('listQueue')
             .setLabel('List')
-            .setStyle('PRIMARY')
-            .setEmoji('\uD83C\uDDF1'), // Regional Indicator L
+            .setStyle('PRIMARY'),
         );
 
       const row2 = new MessageActionRow()
@@ -288,13 +267,11 @@ NormClient.on('interactionCreate', async (buttonInteraction: Interaction) => {
           new MessageButton()
             .setCustomId('top5')
             .setLabel('Top 5')
-            .setStyle('SECONDARY')
-            .setEmoji('🔢'),
+            .setStyle('SECONDARY'),
           new MessageButton()
             .setCustomId('help')
             .setLabel('Help')
-            .setStyle('SECONDARY')
-            .setEmoji('❓'),
+            .setStyle('SECONDARY'),
         );
 
       const embed = new MessageEmbed()
